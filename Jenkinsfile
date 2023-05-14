@@ -28,9 +28,7 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh '''
-                   docker build -t final-demo/${env.BUILD_NUMBER} .
-                '''
+                sh "docker build -t final-demo/${env.BUILD_NUMBER} ."
             }
         }
         stage('Tag image'){
