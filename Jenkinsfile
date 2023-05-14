@@ -28,9 +28,10 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh 'ls -la'
-                sh 'pwd'
-                sh 'docker build -t final-demo .'
+                sh """
+                   sh 'docker rmi -f $(docker images -a -q)'
+                   docker build -t finaldemo/${env.BUILD_NUMBER} .
+                """
             }
         }
         stage('Tag image'){
@@ -38,9 +39,10 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh 'ls -la'
-                sh 'pwd'
-                sh 'docker tag final-demo:latest 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:latest'
+                sh """
+                   docker tag finaldemo/${env.BUILD_NUMBER} 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:latest
+                   docker tag finaldemo/${env.BUILD_NUMBER} 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:${env.BUILD_NUMBER}
+                """                
             }
         }
         stage('Push image'){
@@ -48,9 +50,9 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh 'ls -la'
-                sh 'pwd'
-                sh 'docker push 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:latest'
+                sh """
+                    docker push --all-tags 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo
+                """
             }
         }
     }
