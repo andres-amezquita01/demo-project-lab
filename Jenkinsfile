@@ -28,7 +28,7 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh "docker build -t final-demo/${env.BUILD_NUMBER} ."
+                sh "docker build -t 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo . --no-cache"
             }
         }
         stage('Tag image'){
@@ -36,10 +36,9 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh '''
-                   docker tag finaldemo/${env.BUILD_NUMBER} 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:latest
-                   docker tag finaldemo/${env.BUILD_NUMBER} 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:${env.BUILD_NUMBER}
-                '''                
+                sh """
+                   docker tag 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:latest 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:${env.BUILD_NUMBER}
+                """                
             }
         }
         stage('Push image'){
@@ -47,9 +46,10 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh '''
-                    docker push --all-tags 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo
-                '''
+                sh """
+                    docker push 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:latest
+                    docker push 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:${env.BUILD_NUMBER}
+                """
             }
         }
     }
