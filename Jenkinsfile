@@ -30,7 +30,7 @@ pipeline {
             steps{
                 sh """
                    sh 'docker rmi -f $(docker images -a -q)'
-                   docker build -t finaldemo/${env.BUILD_NUMBER} .
+                   docker build -t final-demo/${env.BUILD_NUMBER} .
                 """
             }
         }
