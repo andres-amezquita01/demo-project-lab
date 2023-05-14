@@ -56,7 +56,8 @@ pipeline {
     post{
         always {
             node('docker'){
-                sh 'docker rmi -f $(docker images -a -q)'
+                //sh 'docker rmi -f $(docker images -a -q)'
+                sh 'docker rmi -f 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo'
                 sh 'docker images'
                 sh 'docker logout'
             }
