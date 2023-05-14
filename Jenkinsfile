@@ -28,10 +28,10 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh """
+                sh '''
                    docker rmi -f $(docker images -a -q)
                    docker build -t final-demo/${env.BUILD_NUMBER} .
-                """
+                '''
             }
         }
         stage('Tag image'){
@@ -39,10 +39,10 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh """
+                sh '''
                    docker tag finaldemo/${env.BUILD_NUMBER} 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:latest
                    docker tag finaldemo/${env.BUILD_NUMBER} 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:${env.BUILD_NUMBER}
-                """                
+                '''                
             }
         }
         stage('Push image'){
@@ -50,9 +50,9 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh """
+                sh '''
                     docker push --all-tags 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo
-                """
+                '''
             }
         }
     }
