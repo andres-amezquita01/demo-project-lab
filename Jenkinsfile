@@ -2,15 +2,18 @@ pipeline {
     agent any
 
     stages {
-        stage('Hello') {
+        stage('Test') {
+            tools {
+                go 'go-1.20.3'
+            }
+            environment {
+                GO111MODULE = 'on'
+            }
             agent {
                 label "docker"
             }
             steps {
-                echo 'Hello World'
-                sh 'pwd'
-                sh 'whoami'
-                sh 'ls -la'
+                sh 'go test'
             }
         }
         stage('Docker login') {
