@@ -66,7 +66,7 @@ pipeline {
     post{
         always {
             node('docker'){
-                sh 'docker image prune -af'
+                //sh 'docker image prune -af'
                 sh 'docker images'
                 sh 'docker logout'
             }
