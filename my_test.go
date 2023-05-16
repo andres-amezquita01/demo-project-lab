@@ -10,7 +10,7 @@ import (
 
 func TestAddNumbers(t *testing.T) {
 	// Define la solicitud para sumar 2 y 3
-	request := AddRequest{Num1: 3, Num2: 3}
+	request := AddRequest{Num1: 2, Num2: 3}
 	jsonReq, _ := json.Marshal(request)
 
 	// Crea una solicitud HTTP POST con la solicitud JSON
