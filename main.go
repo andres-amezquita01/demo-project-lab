@@ -67,7 +67,7 @@ func ShowSubstraction(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Now, you can substract two numbers")
 }
 func ShowTest(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "test to production")
+		fmt.Fprint(w, "test to present the demo")
 }
 
 func main() {
