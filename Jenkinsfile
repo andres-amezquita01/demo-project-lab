@@ -55,10 +55,10 @@ pipeline {
                 """
             }
         }
-        stage('Deploy'){
+        stage('Deploy to production'){
             steps{
                 sh """
-                scp docker.sh  ec2-user@ec2-52-207-210-252.compute-1.amazonaws.com:~/deployment                              
+                scp docker.sh  ec2-user@ec2-54-160-222-29.compute-1.amazonaws.com:~/production
                 """
             }
         }
@@ -66,7 +66,7 @@ pipeline {
     post{
         always {
             node('docker'){
-                //sh 'docker image prune -af'
+                sh 'docker image prune -af'
                 sh 'docker images'
                 sh 'docker logout'
             }
