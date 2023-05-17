@@ -81,7 +81,7 @@ func main() {
 	r.HandleFunc("/sub", ShowSubstraction).Methods("GET")
 	r.HandleFunc("/sub", SubstractNumbers).Methods("POST")
 
-	r.HandleFunc("/mul", ShowSubstraction).Methods("GET")
+	r.HandleFunc("/mul", ShowMultiply).Methods("GET")
 
 	r.HandleFunc("/test", ShowTest).Methods("GET")
 
