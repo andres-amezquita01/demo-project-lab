@@ -69,6 +69,10 @@ func ShowSubstraction(w http.ResponseWriter, r *http.Request) {
 func ShowMultiply(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Now, you can multiply two numbers")
 }
+func ShowDivision(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Now, you can divide two numbers")
+}
+
 
 func ShowTest(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "test to present the demo")
@@ -82,6 +86,7 @@ func main() {
 	r.HandleFunc("/sub", SubstractNumbers).Methods("POST")
 
 	r.HandleFunc("/mul", ShowMultiply).Methods("GET")
+	r.HandleFunc("/div", ShowDivision).Methods("GET")
 
 	r.HandleFunc("/test", ShowTest).Methods("GET")
 
