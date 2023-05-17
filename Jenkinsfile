@@ -1,5 +1,5 @@
 def ECR_URL = "282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo"
-def DEPLOYMENT_USER =  ec2-user@ec2-54-160-222-29.compute-1.amazonaws.com
+def DEPLOYMENT_USER =  "ec2-user@ec2-54-160-222-29.compute-1.amazonaws.com"
 pipeline {
     agent any
 
