@@ -78,7 +78,7 @@ func main() {
 	r.HandleFunc("/sub", SubstractNumbers).Methods("POST")
 
 
-	r.HandleFunc("/test", ShowSubstraction).Methods("GET")
+	r.HandleFunc("/test", ShowTest).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
