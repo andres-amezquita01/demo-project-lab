@@ -34,7 +34,7 @@ func AddNumbers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 func ShowAddNumbers(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Here we go again! now, you are going to add two numbers!")
+		fmt.Fprint(w, "Here you can add two numbers!")
 }
 
 func ShowSubstraction(w http.ResponseWriter, r *http.Request) {
