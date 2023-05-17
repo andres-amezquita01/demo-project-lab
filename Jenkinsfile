@@ -67,6 +67,8 @@ pipeline {
         }
         stage('Deploy to production'){
             steps{
+                input(message: '¿Do you want to deploy in production?', ok: 'yes')
+
                 sh """
                 scp docker.sh ${DEPLOYMENT_USER}:~/production
                 """
