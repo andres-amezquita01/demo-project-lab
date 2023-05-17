@@ -1,3 +1,4 @@
+def ECR_URL = "282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo"
 pipeline {
     agent any
 
@@ -31,7 +32,7 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh "docker build -t 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo . --no-cache"
+                sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
         stage('Tag image'){
@@ -40,7 +41,7 @@ pipeline {
             }
             steps{
                 sh """
-                   docker tag 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:latest 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:${env.BUILD_NUMBER}
+                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
                 """                
             }
         }
@@ -50,8 +51,8 @@ pipeline {
             }
             steps{
                 sh """
-                    docker push 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:latest
-                    docker push 282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo:${env.BUILD_NUMBER}
+                    docker push ${ECR_URL}:latest
+                    docker push ${ECR_URL}:${env.BUILD_NUMBER}
                 """
             }
         }
