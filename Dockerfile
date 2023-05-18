@@ -7,7 +7,7 @@ WORKDIR /app
 RUN go build -o main .
 
 # Stage 2: Final Image
-FROM alpine:3.14
+FROM public.ecr.aws/docker/library/alpine:3.14
 
 COPY --from=builder /app/main /app/main
 
