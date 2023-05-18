@@ -75,7 +75,7 @@ func ShowDivision(w http.ResponseWriter, r *http.Request) {
 
 
 func ShowTest(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "test to present the demo")
+		fmt.Fprint(w, "This is working with the new multi-stage dockerfile!!!")
 }
 
 func main() {
