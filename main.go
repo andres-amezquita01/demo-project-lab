@@ -75,7 +75,7 @@ func ShowDivision(w http.ResponseWriter, r *http.Request) {
 
 
 func ShowTest(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "test to the demo!")
+		fmt.Fprint(w, "test for testing the demo!")
 }
 
 func main() {
