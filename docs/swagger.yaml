@@ -1,0 +1,76 @@
+definitions:
+  main.AddResponse:
+    properties:
+      result:
+        type: integer
+    type: object
+  main.GreeterResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  main.ResultResponse:
+    properties:
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /add:
+    post:
+      operationId: "2"
+      parameters:
+      - description: first number
+        in: formData
+        name: num1
+        required: true
+        type: integer
+      - description: second number
+        in: formData
+        name: num2
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.AddResponse'
+      summary: Add numbers service
+  /bin:
+    post:
+      operationId: "3"
+      parameters:
+      - description: number
+        in: formData
+        name: num1
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ResultResponse'
+      summary: Int to binary service
+  /v1/greeter:
+    get:
+      operationId: "1"
+      parameters:
+      - description: Input name
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.GreeterResponse'
+      summary: Greeter service
+swagger: "2.0"

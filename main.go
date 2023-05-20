@@ -1,94 +1,112 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
-	"log"
+	"github.com/rookie-ninja/rk-boot"
+	"github.com/rookie-ninja/rk-boot/mux"
+	"github.com/rookie-ninja/rk-mux/interceptor"
 	"net/http"
-
-	"github.com/gorilla/mux"
+	"strconv"
 )
 
+type ResultResponse struct {
+	Message string
+}
 type AddRequest struct {
 	Num1 int `json:"num1"`
 	Num2 int `json:"num2"`
 }
 
+// Response.
 type AddResponse struct {
 	Result int `json:"result"`
 }
-type substractRequest struct {
-	Num1 int `json:"num1"`
-	Num2 int `json:"num2"`
+
+// Response.
+type GreeterResponse struct {
+	Message string
 }
 
-type substractResponse struct {
-	Result int `json:"result"`
+type SumaResponse struct {
+	Resultado int `json:"resultado"`
 }
 
-func AddNumbers(w http.ResponseWriter, r *http.Request) {
-	// Decodifica la solicitud JSON y la almacena en la variable "request"
-	var request AddRequest
-	err := json.NewDecoder(r.Body).Decode(&request)
+// @Summary Greeter service
+// @Id 1
+// @version 1.0
+// @produce application/json
+// @Param name query string true "Input name"
+// @Success 200 {object} GreeterResponse
+// @Router /v1/greeter [get]
+func Greeter(writer http.ResponseWriter, request *http.Request) {
+	rkmuxinter.WriteJson(writer, http.StatusOK, &GreeterResponse{
+		Message: fmt.Sprintf("Hello %s!", request.URL.Query().Get("name")),
+	})
+}
+
+// @Summary Add numbers service
+// @Id 2
+// @version 1.0
+// @produce application/json
+// @Param num1 formData int true "first number"
+// @Param num2 formData int true "second number"
+// @Success 200 {object} AddResponse
+// @Router /add [post]
+func AddNumbers(writer http.ResponseWriter, request *http.Request) {
+	num1, err := strconv.Atoi(request.FormValue("num1"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(writer, "Invalid value for num1", http.StatusBadRequest)
 		return
 	}
 
-	result := request.Num1 + request.Num2
-
-	response := AddResponse{Result: result}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
-}
-
-func SubstractNumbers(w http.ResponseWriter, r *http.Request) {
-	// Decodifica la solicitud JSON y la almacena en la variable "request"
-	var request substractRequest
-	err := json.NewDecoder(r.Body).Decode(&request)
+	num2, err := strconv.Atoi(request.FormValue("num2"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(writer, "Invalid value for num2", http.StatusBadRequest)
 		return
 	}
 
-	result := request.Num1 - request.Num2
+	sum := num1 + num2
 
-	response := substractResponse{Result: result}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	rkmuxinter.WriteJson(writer, http.StatusOK, &AddResponse{
+		Result: sum,
+	})
+
 }
 
+// @Summary Int to binary service
+// @Id 3
+// @version 1.0
+// @produce application/json
+// @Param num1 formData int true "number"
+// @Success 200 {object} ResultResponse
+// @Router /bin [post]
+func ConvertIntToBinary(writer http.ResponseWriter, request *http.Request) {
+	num1, err := strconv.Atoi(request.FormValue("num1"))
+	if err != nil {
+		http.Error(writer, "Invalid value for num1", http.StatusBadRequest)
+		return
+	}
 
-func ShowAddNumbers(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Now, you can add two numbers")
-}
+	result := DecimalToBinary(num1)
+	rkmuxinter.WriteJson(writer, http.StatusOK, &ResultResponse{
+		Message: result,
+	})
 
-func ShowSubstraction(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Now, you can substract two numbers")
-}
-func ShowMultiply(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Now, you can multiply two numbers")
-}
-func ShowDivision(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Now, you can divide two numbers")
-}
-
-
-func ShowTest(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "This is working with the new multi-stage dockerfile!!!")
 }
 
 func main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/add", AddNumbers).Methods("POST")
-	r.HandleFunc("/add", ShowAddNumbers).Methods("GET")
-	r.HandleFunc("/sub", ShowSubstraction).Methods("GET")
-	r.HandleFunc("/sub", SubstractNumbers).Methods("POST")
+	// Create a new boot instance.
+	boot := rkboot.NewBoot()
 
-	r.HandleFunc("/mul", ShowMultiply).Methods("GET")
-	r.HandleFunc("/div", ShowDivision).Methods("GET")
+	// Register handler
+	entry := rkbootmux.GetMuxEntry("greeter")
+	entry.Router.NewRoute().Methods(http.MethodGet).Path("/v1/greeter").HandlerFunc(Greeter)
+	entry.Router.NewRoute().Methods(http.MethodPost).Path("/add").HandlerFunc(AddNumbers)
+	entry.Router.NewRoute().Methods(http.MethodPost).Path("/bin").HandlerFunc(ConvertIntToBinary)
 
-	r.HandleFunc("/test", ShowTest).Methods("GET")
+	// Bootstrap
+	boot.Bootstrap(context.TODO())
 
-	log.Fatal(http.ListenAndServe(":8080", r))
+	boot.WaitForShutdownSig(context.TODO())
 }
