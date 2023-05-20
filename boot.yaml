@@ -1,0 +1,9 @@
+mux:
+  - name: greeter        # Required
+    port: 8080           # Required
+    enabled: true        # Required
+    sw:
+      enabled: true      # Optional, default: false
+      jsonPath: "docs"   # Optional, default: ""
+      path: "docs"        # Default value is "sw", change it as needed
+#      headers: []       # Headers that will be set while accessing swagger UI main page.
