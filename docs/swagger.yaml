@@ -55,7 +55,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/main.ResultResponse'
-      summary: Int to binary service
+      summary: Decimal to binary service
   /v1/greeter:
     get:
       operationId: "1"

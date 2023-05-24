@@ -54,7 +54,7 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Int to binary service",
+                "summary": "Decimal to binary service",
                 "operationId": "3",
                 "parameters": [
                     {
