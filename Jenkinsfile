@@ -1,12 +1,11 @@
-def ECR_URL = "282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo"
+def ECR_URL 
 def STAGING_USER = "ec2-user@ec2-3-238-154-128.compute-1.amazonaws.com"
 def DEPLOYMENT_USER =  "ec2-user@ec2-107-21-72-235.compute-1.amazonaws.com"
-def MY_REPO
 pipeline {
     agent any
 
     stages {
-        stage('Test') {
+        stage('Run unit test') {
             tools {
                 go 'go-1.20.3'
             }
@@ -25,11 +24,26 @@ pipeline {
                 label "docker"
             }
             steps {
-                sh 'ls -la'
-                sh 'pwd'
                 sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 282335569253.dkr.ecr.us-east-1.amazonaws.com'
             }
         }
+        stage('Get ecr'){
+            agent {
+                label "terraform"
+            }
+            steps{
+                dir("terraform/remote_backend"){
+                    sh 'terraform init'
+                     script {
+                        ECR_URL = sh (
+                          script: "terraform output --raw ecr_repository_url", 
+                          returnStdout: true
+                        )
+                      }
+                    sh "echo ${ECR_URL}"
+                }
+            }
+        } 
         stage('Build image'){
             agent {
                 label "docker"
@@ -39,37 +53,7 @@ pipeline {
                 //sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
-       stage('Validate terraform'){
-            agent {
-                label "terraform"
-            }
-            steps{
-                dir("terraform/remote_backend"){
-                    sh 'echo ${ECR_URL}'
-                    sh 'terraform init'
-                    sh 'terraform output'
-                }
-                //sh "docker build -t  ${ECR_URL} . --no-cache"
-            }
-        }
-        stage('Get ecr'){
-            agent {
-                label "terraform"
-            }
-            steps{
-                dir("terraform/remote_backend"){
-                    sh 'echo ${ECR_URL}'
-                    sh 'terraform init'
-                     script {
-                        MY_REPO = sh (
-                          script: "terraform output --raw ecr_repository_url", 
-                          returnStdout: true
-                        )
-                      }
-                    sh "echo ${MY_REPO}"
-                }
-            }
-        } 
+
 //         stage('Tag image'){
 //             agent {
 //                 label "docker"
