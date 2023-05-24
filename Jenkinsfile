@@ -34,7 +34,20 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh "docker build -t  ${ECR_URL} . --no-cache"
+                sh 'echo ${ECR_URL}'
+                //sh "docker build -t  ${ECR_URL} . --no-cache"
+            }
+        }
+       stage('Get ecr'){
+            agent {
+                label "terraform"
+            }
+            steps{
+                dir("terraform/remote_backend"){
+                    sh 'echo ${ECR_URL}'
+                    sh 'terraform output'
+                }
+                //sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
 //         stage('Tag image'){
