@@ -37,43 +37,43 @@ pipeline {
                 sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
-        stage('Tag image'){
-            agent {
-                label "docker"
-            }
-            steps{
-                sh """
-                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
-                """                
-            }
-        }
-        stage('Push image'){
-            agent {
-                label "docker"
-            }
-            steps{
-                sh """
-                    docker push ${ECR_URL}:latest
-                    docker push ${ECR_URL}:${env.BUILD_NUMBER}
-                """
-            }
-        }
-        stage('Deploy to stage'){
-            steps{
-                sh """
-                scp docker.sh ${STAGING_USER}:~/stage
-                """
-            }
-        }
-        stage('Deploy to production'){
-            steps{
-                input(message: '¿Do you want to deploy to production?', ok: 'yes')
-
-                sh """
-                scp docker.sh ${DEPLOYMENT_USER}:~/production
-                """
-            }
-        }
+//         stage('Tag image'){
+//             agent {
+//                 label "docker"
+//             }
+//             steps{
+//                 sh """
+//                    docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
+//                 """
+//             }
+//         }
+//         stage('Push image'){
+//             agent {
+//                 label "docker"
+//             }
+//             steps{
+//                 sh """
+//                     docker push ${ECR_URL}:latest
+//                     docker push ${ECR_URL}:${env.BUILD_NUMBER}
+//                 """
+//             }
+//         }
+//         stage('Deploy to stage'){
+//             steps{
+//                 sh """
+//                 scp docker.sh ${STAGING_USER}:~/stage
+//                 """
+//             }
+//         }
+//         stage('Deploy to production'){
+//             steps{
+//                 input(message: '¿Do you want to deploy to production?', ok: 'yes')
+//
+//                 sh """
+//                 scp docker.sh ${DEPLOYMENT_USER}:~/production
+//                 """
+//             }
+//         }
     }
     post{
         always {
