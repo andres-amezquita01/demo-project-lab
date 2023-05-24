@@ -35,7 +35,7 @@ pipeline {
             }
             steps{
                 sh 'echo ${ECR_URL}'
-                //sh "docker build -t  ${ECR_URL} . --no-cache"
+                sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
        stage('Get ecr'){
