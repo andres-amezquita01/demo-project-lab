@@ -1,6 +1,6 @@
 def ECR_URL 
-def STAGING_USER = "ec2-user@ec2-3-238-154-128.compute-1.amazonaws.com"
-def DEPLOYMENT_USER =  "ec2-user@ec2-107-21-72-235.compute-1.amazonaws.com"
+def STAGING_USER = "ec2-user@ec2-3-237-95-49.compute-1.amazonaws.com"
+def DEPLOYMENT_USER =  " ec2-user@ec2-23-20-80-13.compute-1.amazonaws.com"
 pipeline {
     agent any
 
@@ -49,48 +49,47 @@ pipeline {
                 label "docker"
             }
             steps{
-                sh 'echo ${ECR_URL}'
-                //sh "docker build -t  ${ECR_URL} . --no-cache"
+                sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
 
-//         stage('Tag image'){
-//             agent {
-//                 label "docker"
-//             }
-//             steps{
-//                 sh """
-//                    docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
-//                 """
-//             }
-//         }
-//         stage('Push image'){
-//             agent {
-//                 label "docker"
-//             }
-//             steps{
-//                 sh """
-//                     docker push ${ECR_URL}:latest
-//                     docker push ${ECR_URL}:${env.BUILD_NUMBER}
-//                 """
-//             }
-//         }
-//         stage('Deploy to stage'){
-//             steps{
-//                 sh """
-//                 scp docker.sh ${STAGING_USER}:~/stage
-//                 """
-//             }
-//         }
-//         stage('Deploy to production'){
-//             steps{
-//                 input(message: '¿Do you want to deploy to production?', ok: 'yes')
-//
-//                 sh """
-//                 scp docker.sh ${DEPLOYMENT_USER}:~/production
-//                 """
-//             }
-//         }
+        stage('Tag image'){
+            agent {
+                label "docker"
+            }
+            steps{
+                sh """
+                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
+                """
+            }
+        }
+        stage('Push image'){
+            agent {
+                label "docker"
+            }
+            steps{
+                sh """
+                    docker push ${ECR_URL}:latest
+                    docker push ${ECR_URL}:${env.BUILD_NUMBER}
+                """
+            }
+        }
+        stage('Deploy to stage'){
+            steps{
+                sh """
+                scp docker.sh ${STAGING_USER}:~/stage
+                """
+            }
+        }
+        stage('Deploy to production'){
+            steps{
+                input(message: '¿Do you want to deploy to production?', ok: 'yes')
+
+                sh """
+                scp docker.sh ${DEPLOYMENT_USER}:~/production
+                """
+            }
+        }
     }
     post{
         always {
