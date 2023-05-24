@@ -4,7 +4,7 @@ def DEPLOYMENT_USER =  " ec2-user@ec2-23-20-80-13.compute-1.amazonaws.com"
 pipeline {
     agent any
 
-//     stages {
+     stages {
 //         stage('Run unit test') {
 //             tools {
 //                 go 'go-1.20.3'
