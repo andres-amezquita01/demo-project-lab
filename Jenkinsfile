@@ -1,6 +1,7 @@
 def ECR_URL = "282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo"
 def STAGING_USER = "ec2-user@ec2-3-238-154-128.compute-1.amazonaws.com"
 def DEPLOYMENT_USER =  "ec2-user@ec2-107-21-72-235.compute-1.amazonaws.com"
+def MY_REPO
 pipeline {
     agent any
 
@@ -38,7 +39,7 @@ pipeline {
                 //sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
-       stage('Get ecr'){
+       stage('Validate terraform'){
             agent {
                 label "terraform"
             }
@@ -51,6 +52,24 @@ pipeline {
                 //sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
+        stage('Get ecr'){
+            agent {
+                label "terraform"
+            }
+            steps{
+                dir("terraform/remote_backend"){
+                    sh 'echo ${ECR_URL}'
+                    sh 'terraform init'
+                     script {
+                        MY_REPO = sh (
+                          script: "terraform output --raw ecr_repository_url", 
+                          returnStdout: true
+                        )
+                      }
+                    sh "echo ${MY_REPO}"
+                }
+            }
+        } 
 //         stage('Tag image'){
 //             agent {
 //                 label "docker"
