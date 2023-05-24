@@ -35,7 +35,7 @@ pipeline {
             }
             steps{
                 sh 'echo ${ECR_URL}'
-                sh "docker build -t  ${ECR_URL} . --no-cache"
+                //sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
        stage('Get ecr'){
@@ -45,8 +45,8 @@ pipeline {
             steps{
                 dir("terraform/remote_backend"){
                     sh 'echo ${ECR_URL}'
-                    //sh 'terraform output'
                     sh 'terraform init'
+                    sh 'terraform output'
                 }
                 //sh "docker build -t  ${ECR_URL} . --no-cache"
             }
