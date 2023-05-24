@@ -4,76 +4,76 @@ def DEPLOYMENT_USER =  " ec2-user@ec2-23-20-80-13.compute-1.amazonaws.com"
 pipeline {
     agent any
 
-    stages {
-        stage('Run unit test') {
-            tools {
-                go 'go-1.20.3'
-            }
-            environment {
-                GO111MODULE = 'on'
-            }
-            agent {
-                label "docker"
-            }
-            steps {
-                sh 'go test'
-            }
-        }
-        stage('Docker login') {
-            agent {
-                label "docker"
-            }
-            steps {
-                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 282335569253.dkr.ecr.us-east-1.amazonaws.com'
-            }
-        }
-        stage('Get ecr'){
-            agent {
-                label "terraform"
-            }
-            steps{
-                dir("terraform/remote_backend"){
-                    sh 'terraform init'
-                     script {
-                        ECR_URL = sh (
-                          script: "terraform output --raw ecr_repository_url", 
-                          returnStdout: true
-                        )
-                      }
-                    sh "echo ${ECR_URL}"
-                }
-            }
-        } 
-        stage('Build image'){
-            agent {
-                label "docker"
-            }
-            steps{
-                sh "docker build -t  ${ECR_URL} . --no-cache"
-            }
-        }
+//     stages {
+//         stage('Run unit test') {
+//             tools {
+//                 go 'go-1.20.3'
+//             }
+//             environment {
+//                 GO111MODULE = 'on'
+//             }
+//             agent {
+//                 label "docker"
+//             }
+//             steps {
+//                 sh 'go test'
+//             }
+//         }
+//         stage('Docker login') {
+//             agent {
+//                 label "docker"
+//             }
+//             steps {
+//                 sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 282335569253.dkr.ecr.us-east-1.amazonaws.com'
+//             }
+//         }
+//         stage('Get ecr'){
+//             agent {
+//                 label "terraform"
+//             }
+//             steps{
+//                 dir("terraform/remote_backend"){
+//                     sh 'terraform init'
+//                      script {
+//                         ECR_URL = sh (
+//                           script: "terraform output --raw ecr_repository_url", 
+//                           returnStdout: true
+//                         )
+//                       }
+//                     sh "echo ${ECR_URL}"
+//                 }
+//             }
+//         } 
+//         stage('Build image'){
+//             agent {
+//                 label "docker"
+//             }
+//             steps{
+//                 sh "docker build -t  ${ECR_URL} . --no-cache"
+//             }
+//         }
 
-        stage('Tag image'){
-            agent {
-                label "docker"
-            }
-            steps{
-                sh """
-                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
-                """
-            }
-        }
-        stage('Push image'){
-            agent {
-                label "docker"
-            }
-            steps{
-                sh """
-                    docker push ${ECR_URL}:latest
-                    docker push ${ECR_URL}:${env.BUILD_NUMBER}
-                """
-            }
-        }
+//         stage('Tag image'){
+//             agent {
+//                 label "docker"
+//             }
+//             steps{
+//                 sh """
+//                    docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
+//                 """
+//             }
+//         }
+//         stage('Push image'){
+//             agent {
+//                 label "docker"
+//             }
+//             steps{
+//                 sh """
+//                     docker push ${ECR_URL}:latest
+//                     docker push ${ECR_URL}:${env.BUILD_NUMBER}
+//                 """
+//             }
+//         }
         stage('Deploy to stage'){
             steps{
                 sh """
