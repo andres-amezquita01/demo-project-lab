@@ -46,3 +46,9 @@ resource "aws_dynamodb_table" "terraform_locks" {
     type = "S"
   }
 }
+data "aws_ecr_repository" "registry" {
+  name = "final-demo"
+}
+output "ecr_repository_url" {
+  value = data.aws_ecr_repository.registry.repository_url
+}

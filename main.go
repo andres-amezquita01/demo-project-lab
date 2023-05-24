@@ -28,10 +28,6 @@ type GreeterResponse struct {
 	Message string
 }
 
-type SumaResponse struct {
-	Resultado int `json:"resultado"`
-}
-
 // @Summary Greeter service
 // @Id 1
 // @version 1.0
@@ -74,7 +70,7 @@ func AddNumbers(writer http.ResponseWriter, request *http.Request) {
 
 }
 
-// @Summary Int to binary service
+// @Summary Decimal to binary service
 // @Id 3
 // @version 1.0
 // @produce application/json

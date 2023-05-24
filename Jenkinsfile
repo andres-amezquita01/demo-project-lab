@@ -1,11 +1,11 @@
-def ECR_URL = "282335569253.dkr.ecr.us-east-1.amazonaws.com/final-demo"
-def STAGING_USER = "ec2-user@ec2-3-238-154-128.compute-1.amazonaws.com"
-def DEPLOYMENT_USER =  "ec2-user@ec2-107-21-72-235.compute-1.amazonaws.com"
+def ECR_URL 
+def STAGING_USER = "ec2-user@ec2-3-237-95-49.compute-1.amazonaws.com"
+def DEPLOYMENT_USER =  " ec2-user@ec2-23-20-80-13.compute-1.amazonaws.com"
 pipeline {
     agent any
 
-    stages {
-        stage('Test') {
+     stages {
+        stage('Run unit test') {
             tools {
                 go 'go-1.20.3'
             }
@@ -24,9 +24,24 @@ pipeline {
                 label "docker"
             }
             steps {
-                sh 'ls -la'
-                sh 'pwd'
                 sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 282335569253.dkr.ecr.us-east-1.amazonaws.com'
+            }
+        }
+        stage('Get ecr url'){
+            agent {
+                label "terraform"
+            }
+            steps{
+                dir("terraform/remote_backend"){
+                    sh 'terraform init'
+                     script {
+                        ECR_URL = sh (
+                          script: "terraform output --raw ecr_repository_url",
+                          returnStdout: true
+                        )
+                      }
+                    sh "echo ${ECR_URL}"
+                }
             }
         }
         stage('Build image'){
@@ -37,6 +52,7 @@ pipeline {
                 sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
+
         stage('Tag image'){
             agent {
                 label "docker"
@@ -44,7 +60,7 @@ pipeline {
             steps{
                 sh """
                    docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
-                """                
+                """
             }
         }
         stage('Push image'){
@@ -68,7 +84,6 @@ pipeline {
         stage('Deploy to production'){
             steps{
                 input(message: '¿Do you want to deploy to production?', ok: 'yes')
-
                 sh """
                 scp docker.sh ${DEPLOYMENT_USER}:~/production
                 """
