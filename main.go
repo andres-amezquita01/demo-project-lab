@@ -29,6 +29,11 @@ type SubResponse struct {
 }
 
 // Response.
+type MulResponse struct {
+	Result int `json:"result"`
+}
+
+// Response.
 type GreeterResponse struct {
 	Message string
 }
@@ -123,6 +128,34 @@ func ConvertIntToBinary(writer http.ResponseWriter, request *http.Request) {
 
 }
 
+// @Summary Multiply service
+// @Id 5
+// @version 1.0
+// @produce application/json
+// @Param num1 formData int true "first number"
+// @Param num2 formData int true "second number"
+// @Success 200 {object} MulResponse
+// @Router /mul [post]
+func MultiplyNumbers(writer http.ResponseWriter, request *http.Request) {
+	num1, err := strconv.Atoi(request.FormValue("num1"))
+	if err != nil {
+		http.Error(writer, "Invalid value for num1", http.StatusBadRequest)
+		return
+	}
+
+	num2, err := strconv.Atoi(request.FormValue("num2"))
+	if err != nil {
+		http.Error(writer, "Invalid value for num2", http.StatusBadRequest)
+		return
+	}
+
+	subtraction := num1 * num2
+
+	rkmuxinter.WriteJson(writer, http.StatusOK, &MulResponse{
+		Result: subtraction,
+	})
+}
+
 func main() {
 	// Create a new boot instance.
 	boot := rkboot.NewBoot()
@@ -133,6 +166,7 @@ func main() {
 	entry.Router.NewRoute().Methods(http.MethodPost).Path("/add").HandlerFunc(AddNumbers)
 	entry.Router.NewRoute().Methods(http.MethodPost).Path("/bin").HandlerFunc(ConvertIntToBinary)
 	entry.Router.NewRoute().Methods(http.MethodPost).Path("/sub").HandlerFunc(SubtractionNumbers)
+	entry.Router.NewRoute().Methods(http.MethodPost).Path("/mul").HandlerFunc(MultiplyNumbers)
 
 	// Bootstrap
 	boot.Bootstrap(context.TODO())
