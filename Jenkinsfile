@@ -5,7 +5,7 @@ pipeline {
     agent any
 
      stages {
-        stage('Run unit test') {
+        stage('Run sonarqube') {
             tools {
                 go 'go-1.20.3'
             }
