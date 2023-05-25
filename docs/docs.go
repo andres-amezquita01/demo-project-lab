@@ -55,7 +55,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "summary": "Decimal to binary service",
-                "operationId": "3",
+                "operationId": "4",
                 "parameters": [
                     {
                         "type": "integer",
@@ -70,6 +70,39 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/main.ResultResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/sub": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Subtract service",
+                "operationId": "3",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "first number",
+                        "name": "num1",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "second number",
+                        "name": "num2",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.SubResponse"
                         }
                     }
                 }
@@ -124,6 +157,14 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "main.SubResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "integer"
                 }
             }
         }
