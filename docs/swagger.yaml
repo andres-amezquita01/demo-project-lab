@@ -4,6 +4,11 @@ definitions:
       result:
         type: integer
     type: object
+  main.DivResponse:
+    properties:
+      result:
+        type: integer
+    type: object
   main.GreeterResponse:
     properties:
       message:
@@ -66,6 +71,28 @@ paths:
           schema:
             $ref: '#/definitions/main.ResultResponse'
       summary: Decimal to binary service
+  /div:
+    post:
+      operationId: "6"
+      parameters:
+      - description: first number
+        in: formData
+        name: num1
+        required: true
+        type: integer
+      - description: second number
+        in: formData
+        name: num2
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.DivResponse'
+      summary: Division service
   /mul:
     post:
       operationId: "5"
