@@ -14,6 +14,11 @@ definitions:
       message:
         type: string
     type: object
+  main.SubResponse:
+    properties:
+      result:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -41,7 +46,7 @@ paths:
       summary: Add numbers service
   /bin:
     post:
-      operationId: "3"
+      operationId: "4"
       parameters:
       - description: number
         in: formData
@@ -56,6 +61,28 @@ paths:
           schema:
             $ref: '#/definitions/main.ResultResponse'
       summary: Decimal to binary service
+  /sub:
+    post:
+      operationId: "3"
+      parameters:
+      - description: first number
+        in: formData
+        name: num1
+        required: true
+        type: integer
+      - description: second number
+        in: formData
+        name: num2
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.SubResponse'
+      summary: Subtract service
   /v1/greeter:
     get:
       operationId: "1"
