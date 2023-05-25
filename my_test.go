@@ -1,7 +1,6 @@
-package Test
+package main
 
 import (
-	"example.com"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -23,7 +22,7 @@ func TestAdd(t *testing.T) {
 	recorder := httptest.NewRecorder()
 
 	// Call the AddNumbers function passing the test Request and ResponseWriter.
-	main.AddNumbers(recorder, req)
+	AddNumbers(recorder, req)
 	// Check the expected status code.
 	if recorder.Code != http.StatusOK {
 		t.Errorf("Expected status code %d but got %d", http.StatusOK, recorder.Code)
