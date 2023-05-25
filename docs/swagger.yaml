@@ -9,6 +9,11 @@ definitions:
       message:
         type: string
     type: object
+  main.MulResponse:
+    properties:
+      result:
+        type: integer
+    type: object
   main.ResultResponse:
     properties:
       message:
@@ -61,6 +66,28 @@ paths:
           schema:
             $ref: '#/definitions/main.ResultResponse'
       summary: Decimal to binary service
+  /mul:
+    post:
+      operationId: "5"
+      parameters:
+      - description: first number
+        in: formData
+        name: num1
+        required: true
+        type: integer
+      - description: second number
+        in: formData
+        name: num2
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.MulResponse'
+      summary: Multiply service
   /sub:
     post:
       operationId: "3"
