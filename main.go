@@ -24,6 +24,11 @@ type AddResponse struct {
 }
 
 // Response.
+type SubResponse struct {
+	Result int `json:"result"`
+}
+
+// Response.
 type GreeterResponse struct {
 	Message string
 }
@@ -67,11 +72,38 @@ func AddNumbers(writer http.ResponseWriter, request *http.Request) {
 	rkmuxinter.WriteJson(writer, http.StatusOK, &AddResponse{
 		Result: sum,
 	})
+}
 
+// @Summary Subtract service
+// @Id 3
+// @version 1.0
+// @produce application/json
+// @Param num1 formData int true "first number"
+// @Param num2 formData int true "second number"
+// @Success 200 {object} SubResponse
+// @Router /sub [post]
+func SubtractionNumbers(writer http.ResponseWriter, request *http.Request) {
+	num1, err := strconv.Atoi(request.FormValue("num1"))
+	if err != nil {
+		http.Error(writer, "Invalid value for num1", http.StatusBadRequest)
+		return
+	}
+
+	num2, err := strconv.Atoi(request.FormValue("num2"))
+	if err != nil {
+		http.Error(writer, "Invalid value for num2", http.StatusBadRequest)
+		return
+	}
+
+	subtraction := num1 + num2
+
+	rkmuxinter.WriteJson(writer, http.StatusOK, &SubResponse{
+		Result: subtraction,
+	})
 }
 
 // @Summary Decimal to binary service
-// @Id 3
+// @Id 4
 // @version 1.0
 // @produce application/json
 // @Param num1 formData int true "number"
@@ -100,6 +132,7 @@ func main() {
 	entry.Router.NewRoute().Methods(http.MethodGet).Path("/v1/greeter").HandlerFunc(Greeter)
 	entry.Router.NewRoute().Methods(http.MethodPost).Path("/add").HandlerFunc(AddNumbers)
 	entry.Router.NewRoute().Methods(http.MethodPost).Path("/bin").HandlerFunc(ConvertIntToBinary)
+	entry.Router.NewRoute().Methods(http.MethodPost).Path("/sub").HandlerFunc(SubtractionNumbers)
 
 	// Bootstrap
 	boot.Bootstrap(context.TODO())

@@ -19,6 +19,23 @@ pipeline {
                 sh 'go test'
             }
         }
+        stage('Run sonarqube') {
+            tools {
+                go 'go-1.20.3'
+            }
+            environment {
+                GO111MODULE = 'on'
+            }
+            agent {
+                label "docker"
+            }
+            steps {
+                withSonarQubeEnv("sonarqube-9.9.1"){
+                    sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
+                }
+            }
+        }
+
         stage('Docker login') {
             agent {
                 label "docker"
