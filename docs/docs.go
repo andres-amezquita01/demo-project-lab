@@ -75,6 +75,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/div": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Division service",
+                "operationId": "6",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "first number",
+                        "name": "num1",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "second number",
+                        "name": "num2",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.DivResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/mul": {
             "post": {
                 "produces": [
@@ -170,6 +203,14 @@ const docTemplate = `{
     },
     "definitions": {
         "main.AddResponse": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "integer"
+                }
+            }
+        },
+        "main.DivResponse": {
             "type": "object",
             "properties": {
                 "result": {
