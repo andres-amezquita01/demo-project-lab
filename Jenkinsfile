@@ -17,7 +17,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv("sonarqube-9.9.1"){
-                    sh "sonar-scanner \
+                    sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner \
                       -Dsonar.projectKey=final-demo \
                       -Dsonar.sources=. \
                       -Dsonar.host.url=http://18.234.221.171:9000 \
