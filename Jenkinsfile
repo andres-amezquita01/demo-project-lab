@@ -1,4 +1,5 @@
 def ECR_URL 
+def HASH_COMMIT
 def STAGING_USER = "ec2-user@ec2-3-237-95-49.compute-1.amazonaws.com"
 def DEPLOYMENT_USER =  " ec2-user@ec2-23-20-80-13.compute-1.amazonaws.com"
 pipeline {
@@ -35,7 +36,6 @@ pipeline {
                 }
             }
         }
-
         stage('Docker login') {
             agent {
                 label "docker"
@@ -57,7 +57,15 @@ pipeline {
                           returnStdout: true
                         )
                       }
+                     script {
+                        HASH_COMMIT = sh (
+                          script: "git log -1 --pretty=format:'%H'",
+                          returnStdout: true
+                        )
+                      }
                     sh "echo ${ECR_URL}"
+                    sh "echo ${HASH_COMMIT}"
+
                 }
             }
         }
@@ -76,7 +84,7 @@ pipeline {
             }
             steps{
                 sh """
-                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
+                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${HASH_COMMIT}
                 """
             }
         }
@@ -87,7 +95,7 @@ pipeline {
             steps{
                 sh """
                     docker push ${ECR_URL}:latest
-                    docker push ${ECR_URL}:${env.BUILD_NUMBER}
+                    docker push ${ECR_URL}:${HASH_COMMIT}
                 """
             }
         }
