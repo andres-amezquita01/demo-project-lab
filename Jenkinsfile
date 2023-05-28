@@ -19,6 +19,7 @@ pipeline {
             }
             steps {
                 sh 'go test'
+                sh 'go test -v -coverprofile cover.out'
             }
         }
         stage('Run sonarqube') {
