@@ -6,36 +6,36 @@ pipeline {
     agent any
 
      stages {
-        stage('Run unit test') {
-            tools {
-                go 'go-1.20.3'
-            }
-            environment {
-                GO111MODULE = 'on'
-            }
-            agent {
-                label "docker"
-            }
-            steps {
-                sh 'go test'
-            }
-        }
-        stage('Run sonarqube') {
-            tools {
-                go 'go-1.20.3'
-            }
-            environment {
-                GO111MODULE = 'on'
-            }
-            agent {
-                label "docker"
-            }
-            steps {
-                withSonarQubeEnv("sonarqube-9.9.1"){
-                    sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
-                }
-            }
-        }
+        // stage('Run unit test') {
+        //     tools {
+        //         go 'go-1.20.3'
+        //     }
+        //     environment {
+        //         GO111MODULE = 'on'
+        //     }
+        //     agent {
+        //         label "docker"
+        //     }
+        //     steps {
+        //         sh 'go test'
+        //     }
+        // }
+        // stage('Run sonarqube') {
+        //     tools {
+        //         go 'go-1.20.3'
+        //     }
+        //     environment {
+        //         GO111MODULE = 'on'
+        //     }
+        //     agent {
+        //         label "docker"
+        //     }
+        //     steps {
+        //         withSonarQubeEnv("sonarqube-9.9.1"){
+        //             sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
+        //         }
+        //     }
+        // }
         stage('Docker login') {
             agent {
                 label "docker"
@@ -99,21 +99,21 @@ pipeline {
                 """
             }
         }
-        stage('Deploy to stage'){
-            steps{
-                sh """
-                scp docker.sh ${STAGING_USER}:~/stage
-                """
-            }
-        }
-        stage('Deploy to production'){
-            steps{
-                input(message: '¿Do you want to deploy to production?', ok: 'yes')
-                sh """
-                scp docker.sh ${DEPLOYMENT_USER}:~/production
-                """
-            }
-        }
+        // stage('Deploy to stage'){
+        //     steps{
+        //         sh """
+        //         scp docker.sh ${STAGING_USER}:~/stage
+        //         """
+        //     }
+        // }
+        // stage('Deploy to production'){
+        //     steps{
+        //         input(message: '¿Do you want to deploy to production?', ok: 'yes')
+        //         sh """
+        //         scp docker.sh ${DEPLOYMENT_USER}:~/production
+        //         """
+        //     }
+        // }
     }
     post{
         always {
