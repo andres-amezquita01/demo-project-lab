@@ -18,6 +18,7 @@ pipeline {
             // }
             steps {
             //     sh 'go test'
+                sh 'pwd'
             }
         }
         stage('Run sonarqube') {
@@ -34,6 +35,7 @@ pipeline {
             //     withSonarQubeEnv("sonarqube-9.9.1"){
             //         sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
             //     }
+                            sh 'pwd'
             }
         }
 
@@ -43,6 +45,7 @@ pipeline {
             // }
             steps {
             //     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 282335569253.dkr.ecr.us-east-1.amazonaws.com'
+                            sh 'pwd'
             }
         }
         stage('Get ecr url'){
@@ -76,6 +79,7 @@ pipeline {
             // }
             steps{
             //     sh "docker build -t  ${ECR_URL} . --no-cache"
+                            sh 'pwd'
             }
         }
 
@@ -87,6 +91,7 @@ pipeline {
             //     sh """
             //        docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
             //     """
+                            sh 'pwd'
             }
         }
         stage('Push image'){
@@ -98,6 +103,7 @@ pipeline {
             //         docker push ${ECR_URL}:latest
             //         docker push ${ECR_URL}:${env.BUILD_NUMBER}
             //     """
+                            sh 'pwd'
             }
         }
         stage('Deploy to stage'){
@@ -105,6 +111,7 @@ pipeline {
             //     sh """
             //     scp docker.sh ${STAGING_USER}:~/stage
             //     """
+                            sh 'pwd'
             }
         }
         stage('Deploy to production'){
@@ -113,6 +120,7 @@ pipeline {
             //     sh """
             //     scp docker.sh ${DEPLOYMENT_USER}:~/production
             //     """
+                            sh 'pwd'
             }
         }
     }
