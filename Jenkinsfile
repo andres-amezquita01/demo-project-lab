@@ -35,7 +35,7 @@ pipeline {
                     sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
                 }
             }
-        // }
+        }
         // stage('Docker login') {
         //     agent {
         //         label "docker"
