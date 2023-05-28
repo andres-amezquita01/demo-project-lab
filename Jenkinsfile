@@ -84,7 +84,7 @@ pipeline {
             }
             steps{
                 sh """
-                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
+                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${HASH_COMMIT}
                 """
             }
         }
@@ -95,7 +95,7 @@ pipeline {
             steps{
                 sh """
                     docker push ${ECR_URL}:latest
-                    docker push ${ECR_URL}:${env.BUILD_NUMBER}
+                    docker push ${ECR_URL}:${HASH_COMMIT}
                 """
             }
         }
