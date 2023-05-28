@@ -32,6 +32,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv("sonarqube-9.9.1"){
+                    sh "cat sonar-project.properties"
                     sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
                 }
             }
