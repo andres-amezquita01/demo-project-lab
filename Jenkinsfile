@@ -7,43 +7,66 @@ pipeline {
 
      stages {
         stage('Run unit test') {
-            tools {
-                go 'go-1.20.3'
-            }
-            environment {
-                GO111MODULE = 'on'
-            }
-            agent {
-                label "docker"
-            }
             steps {
-                sh 'go test'
+                sh 'echo hola'
             }
         }
-        stage('Run sonarqube') {
-            tools {
-                go 'go-1.20.3'
-            }
-            environment {
-                GO111MODULE = 'on'
-            }
-            agent {
-                label "docker"
-            }
+                stage('Run sonarqube') {
             steps {
-                withSonarQubeEnv("sonarqube-9.9.1"){
-                    sh "cat sonar-project.properties"
-                    sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
-                }
+                sh 'echo hola'
             }
         }
-        stage("Quality Gate") {
-            steps{
-                timeout(time: 1, unit: 'HOURS') {
-                waitForQualityGate abortPipeline: true
-                }
+                stage('Build & Package') {
+            steps {
+                sh 'echo hola'
             }
         }
+                stage('Deploy to staging') {
+            steps {
+                sh 'echo hola'
+            }
+        }
+                stage('Deploy to production') {
+            steps {
+                sh 'echo hola'
+            }
+        }
+        // stage('Run unit test') {
+        //     tools {
+        //         go 'go-1.20.3'
+        //     }
+        //     environment {
+        //         GO111MODULE = 'on'
+        //     }
+        //     agent {
+        //         label "docker"
+        //     }
+        //     steps {
+        //         sh 'go test'
+        //     }
+        // }
+        // stage('Run sonarqube') {
+        //     tools {
+        //         go 'go-1.20.3'
+        //     }
+        //     environment {
+        //         GO111MODULE = 'on'
+        //     }
+        //     agent {
+        //         label "docker"
+        //     }
+        //     steps {
+        //         withSonarQubeEnv("sonarqube-9.9.1"){
+        //             sh "cat sonar-project.properties"
+        //             sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
+        //         }
+        //     }
+        // }
+
+
+
+
+
         // stage('Docker login') {
         //     agent {
         //         label "docker"
