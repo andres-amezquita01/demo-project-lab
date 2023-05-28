@@ -7,7 +7,7 @@ pipeline {
 
      stages {
 
-        stage('Run unit test') {
+        stage('Run unit test/coverage') {
             tools {
                 go 'go-1.20.3'
             }
