@@ -71,7 +71,7 @@ pipeline {
                     sh "echo ${HASH_COMMIT}"
 
                 }
-            }FD-15-Implement-quality-gate
+            }
         }
         stage('Build image'){
             agent {
