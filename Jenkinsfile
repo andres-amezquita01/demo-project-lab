@@ -1,11 +1,13 @@
 def ECR_URL 
-def STAGING_USER = "ec2-user@ec2-3-237-95-49.compute-1.amazonaws.com"
-def DEPLOYMENT_USER =  " ec2-user@ec2-23-20-80-13.compute-1.amazonaws.com"
+def HASH_COMMIT
+def STAGING_USER = "ec2-user@ec2-3-238-105-179.compute-1.amazonaws.com"
+def DEPLOYMENT_USER =  " ec2-user@ec2-3-91-151-183.compute-1.amazonaws.com"
 pipeline {
     agent any
 
      stages {
-        stage('Run unit test') {
+
+        stage('Run unit test/coverage') {
             tools {
                 go 'go-1.20.3'
             }
@@ -17,6 +19,7 @@ pipeline {
             }
             steps {
                 sh 'go test'
+                sh 'go test -v -coverprofile cover.out'
             }
         }
         stage('Run sonarqube') {
@@ -31,6 +34,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv("sonarqube-9.9.1"){
+                    sh "cat sonar-project.properties"
                     sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
                 }
             }
@@ -57,7 +61,15 @@ pipeline {
                           returnStdout: true
                         )
                       }
+                     script {
+                        HASH_COMMIT = sh (
+                          script: "git log -1 --pretty=format:'%H'",
+                          returnStdout: true
+                        )
+                      }
                     sh "echo ${ECR_URL}"
+                    sh "echo ${HASH_COMMIT}"
+
                 }
             }
         }
@@ -76,7 +88,7 @@ pipeline {
             }
             steps{
                 sh """
-                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${env.BUILD_NUMBER}
+                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${HASH_COMMIT}
                 """
             }
         }
@@ -87,7 +99,7 @@ pipeline {
             steps{
                 sh """
                     docker push ${ECR_URL}:latest
-                    docker push ${ECR_URL}:${env.BUILD_NUMBER}
+                    docker push ${ECR_URL}:${HASH_COMMIT}
                 """
             }
         }
