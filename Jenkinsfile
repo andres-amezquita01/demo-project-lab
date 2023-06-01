@@ -7,54 +7,54 @@ pipeline {
 
      stages {
 
-        // stage('Run unit test/coverage') {
-        //     tools {
-        //         go 'go-1.20.3'
-        //     }
-        //     environment {
-        //         GO111MODULE = 'on'
-        //     }
-        //     agent {
-        //         label "docker"
-        //     }
-        //     steps {
-        //         sh 'go test'
-        //         sh 'go test -v -coverprofile cover.out'
-        //     }
-        // }
-        // stage('Run sonarqube') {
-        //     tools {
-        //         go 'go-1.20.3'
-        //     }
-        //     environment {
-        //         GO111MODULE = 'on'
-        //     }
-        //     agent {
-        //         label "docker"
-        //     }
-        //     steps {
-        //         withSonarQubeEnv("sonarqube-9.9.1"){
-        //             sh "cat sonar-project.properties"
-        //             sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
-        //         }
-        //     }
-        // }
-        // stage("Quality Gate") {
-        //     steps{
-        //         timeout(time: 1, unit: 'HOURS') {
-        //         waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
+        stage('Run unit test/coverage') {
+            tools {
+                go 'go-1.20.3'
+            }
+            environment {
+                GO111MODULE = 'on'
+            }
+            agent {
+                label "docker"
+            }
+            steps {
+                sh 'go test'
+                sh 'go test -v -coverprofile cover.out'
+            }
+        }
+        stage('Run sonarqube') {
+            tools {
+                go 'go-1.20.3'
+            }
+            environment {
+                GO111MODULE = 'on'
+            }
+            agent {
+                label "docker"
+            }
+            steps {
+                withSonarQubeEnv("sonarqube-9.9.1"){
+                    sh "cat sonar-project.properties"
+                    sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps{
+                timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 
-        // stage('Docker login') {
-        //     agent {
-        //         label "docker"
-        //     }
-        //     steps {
-        //         sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 282335569253.dkr.ecr.us-east-1.amazonaws.com'
-        //     }
-        // }
+        stage('Docker login') {
+            agent {
+                label "docker"
+            }
+            steps {
+                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 282335569253.dkr.ecr.us-east-1.amazonaws.com'
+            }
+        }
         stage('Get ecr url and hash commit'){
             agent {
                 label "terraform"
@@ -80,51 +80,51 @@ pipeline {
                 }
             }
         }
-        // stage('Build image'){
-        //     agent {
-        //         label "docker"
-        //     }
-        //     steps{
-        //         sh "docker build -t  ${ECR_URL} . --no-cache"
-        //     }
-        // }
+        stage('Build image'){
+            agent {
+                label "docker"
+            }
+            steps{
+                sh "docker build -t  ${ECR_URL} . --no-cache"
+            }
+        }
 
-        // stage('Tag image'){
-        //     agent {
-        //         label "docker"
-        //     }
-        //     steps{
-        //         sh """
-        //            docker tag  ${ECR_URL}:latest ${ECR_URL}:${HASH_COMMIT}
-        //         """
-        //     }
-        // }
-        // stage('Push image'){
-        //     agent {
-        //         label "docker"
-        //     }
-        //     steps{
-        //         sh """
-        //             docker push ${ECR_URL}:latest
-        //             docker push ${ECR_URL}:${HASH_COMMIT}
-        //         """
-        //     }
-        // }
-        // stage('Deploy to stage'){
-        //     steps{
-        //         sh """
-        //         scp docker.sh ${STAGING_USER}:~/stage
-        //         """
-        //     }
-        // }
-        // stage('Deploy to production'){
-        //     steps{
-        //         input(message: '¿Do you want to deploy to production?', ok: 'yes')
-        //         sh """
-        //         scp docker.sh ${DEPLOYMENT_USER}:~/production
-        //         """
-        //     }
-        // }
+        stage('Tag image'){
+            agent {
+                label "docker"
+            }
+            steps{
+                sh """
+                   docker tag  ${ECR_URL}:latest ${ECR_URL}:${HASH_COMMIT}
+                """
+            }
+        }
+        stage('Push image'){
+            agent {
+                label "docker"
+            }
+            steps{
+                sh """
+                    docker push ${ECR_URL}:latest
+                    docker push ${ECR_URL}:${HASH_COMMIT}
+                """
+            }
+        }
+        stage('Deploy to stage'){
+            steps{
+                sh """
+                scp docker.sh ${STAGING_USER}:~/stage
+                """
+            }
+        }
+        stage('Deploy to production'){
+            steps{
+                input(message: '¿Do you want to deploy to production?', ok: 'yes')
+                sh """
+                scp docker.sh ${DEPLOYMENT_USER}:~/production
+                """
+            }
+        }
     }
     post{
         always {
