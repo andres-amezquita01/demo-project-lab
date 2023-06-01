@@ -8,14 +8,16 @@ terraform {
   }
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
       version = "~> 4.0"
     }
   }
 }
+
 provider "aws" {
   region = "us-east-1"
 }
+
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "devops-project-lab"
   lifecycle {
@@ -46,9 +48,6 @@ resource "aws_dynamodb_table" "terraform_locks" {
     type = "S"
   }
 }
-data "aws_ecr_repository" "registry" {
-  name = "final-demo"
-}
-output "ecr_repository_url" {
-  value = data.aws_ecr_repository.registry.repository_url
+module "ecr" {
+  source = "./modules/ecr"
 }

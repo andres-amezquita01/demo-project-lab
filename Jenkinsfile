@@ -55,12 +55,12 @@ pipeline {
                 sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 282335569253.dkr.ecr.us-east-1.amazonaws.com'
             }
         }
-        stage('Get ecr url'){
+        stage('Get ecr url and hash commit'){
             agent {
                 label "terraform"
             }
             steps{
-                dir("terraform/remote_backend"){
+                dir("terraform/global"){
                     sh 'terraform init'
                      script {
                         ECR_URL = sh (
