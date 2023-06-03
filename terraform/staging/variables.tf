@@ -22,7 +22,12 @@ variable "bucket_key" {
 variable "ecs_task_execution_role" {
   default = "ecsTaskExecutionRole"
 }
-
+variable "registry" {
+  default = "final-demo"
+}
+variable "image_tag" {
+  default = "latest"
+}
 #Variables used in VPC
 variable "vpc_block" {
   default = "10.0.0.0/16"
