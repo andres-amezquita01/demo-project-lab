@@ -108,7 +108,11 @@ pipeline {
             }
             steps{
                dir("terraform/staging/"){
-                    sh "terraform init"
+                    sh """
+                    terraform init
+                    terraform apply -var='image_tag=latest'
+                    aws ecs update-service --region us-east-1 --cluster staging-cluster --service staging-service --task-definition 'staging-td'  --force-new-deployment
+                    """                   
                     script {
                         STAGING_DNS = sh (
                           script: "terraform output --raw staging_lb",
