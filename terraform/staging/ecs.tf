@@ -4,7 +4,6 @@ data "aws_iam_role" "task_execution_role" {
 data "aws_ecr_repository" "registry" {
   name = var.registry
 }
-
 resource "aws_security_group" "sg" {
   name        = "${var.environment}-fargate-sg"
   description = "Allow HTTP inbound traffic"
@@ -15,8 +14,9 @@ resource "aws_security_group" "sg" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    # cidr_blocks = ["0.0.0.0/0"]
+    # ipv6_cidr_blocks = ["::/0"]
+    security_groups = [ aws_security_group.lb-sg.id ]
 
   }
   egress {
@@ -85,7 +85,6 @@ resource "aws_ecs_task_definition" "task" {
   ])
   depends_on = [ aws_cloudwatch_log_group.lg-service ]
 }
-
 resource "aws_ecs_service" "service" {
   name = "${var.environment}-service"
   cluster = aws_ecs_cluster.main_cluster.id
@@ -96,5 +95,10 @@ resource "aws_ecs_service" "service" {
     subnets = [aws_subnet.public_subnets[0].id,aws_subnet.public_subnets[1].id]
     security_groups = [aws_security_group.sg.id]
     assign_public_ip = true
+  }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.app-tg.arn
+    container_name = "${var.environment}-image"
+    container_port = 8080
   }
 }

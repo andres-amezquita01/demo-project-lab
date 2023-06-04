@@ -189,6 +189,18 @@ func DivisionNumbers(writer http.ResponseWriter, request *http.Request) {
 	})
 }
 
+// @Summary Health service
+// @Id 7
+// @version 1.0
+// @produce application/json
+// @Success 200 {object} GreeterResponse
+// @Router /health [get]
+func Health(writer http.ResponseWriter, request *http.Request) {
+	rkmuxinter.WriteJson(writer, http.StatusOK, &GreeterResponse{
+		Message: fmt.Sprintf("Health ok!"),
+	})
+}
+
 func main() {
 	// Create a new boot instance.
 	boot := rkboot.NewBoot()
@@ -196,6 +208,7 @@ func main() {
 	// Register handler
 	entry := rkbootmux.GetMuxEntry("greeter")
 	entry.Router.NewRoute().Methods(http.MethodGet).Path("/v1/greeter").HandlerFunc(Greeter)
+	entry.Router.NewRoute().Methods(http.MethodGet).Path("/health").HandlerFunc(Health)
 	entry.Router.NewRoute().Methods(http.MethodPost).Path("/add").HandlerFunc(AddNumbers)
 	entry.Router.NewRoute().Methods(http.MethodPost).Path("/bin").HandlerFunc(ConvertIntToBinary)
 	entry.Router.NewRoute().Methods(http.MethodPost).Path("/sub").HandlerFunc(SubtractionNumbers)
