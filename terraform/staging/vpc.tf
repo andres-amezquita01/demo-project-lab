@@ -12,8 +12,7 @@ resource "aws_subnet" "public_subnets" {
  tags = {
    Name = "${var.environment} public subnet ${count.index + 1}"
  }
-}
- 
+} 
 resource "aws_subnet" "private_subnets" {
  count      = length(var.private_subnet_cidrs)
  vpc_id     = aws_vpc.main_vpc.id
