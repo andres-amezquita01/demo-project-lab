@@ -104,8 +104,8 @@ pipeline {
         // }
         stage('Deploy to staging'){
             steps{
-               dir("terraform/staging"){
-                    sh "terraform init"
+               dir("terraform/staging/"){
+                    sh 'terraform init'
                     script {
                         STAGING_DNS = sh (
                           script: "terraform output --raw staging_lb",
