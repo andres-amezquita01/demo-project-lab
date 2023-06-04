@@ -110,7 +110,7 @@ pipeline {
                dir("terraform/staging/"){
                     sh """
                     terraform init
-                    terraform apply -var='image_tag=latest'
+                    terraform apply -var='image_tag=latest -no-color -auto-approve'
                     aws ecs update-service --region us-east-1 --cluster staging-cluster --service staging-service --task-definition 'staging-td'  --force-new-deployment
                     """                   
                     script {
