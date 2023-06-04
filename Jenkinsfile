@@ -103,9 +103,12 @@ pipeline {
         //     }
         // }
         stage('Deploy to staging'){
+            agent {
+                label "terraform"
+            }
             steps{
                dir("terraform/staging/"){
-                    sh 'terraform init'
+                    sh "terraform init"
                     script {
                         STAGING_DNS = sh (
                           script: "terraform output --raw staging_lb",
