@@ -1,7 +1,6 @@
 def ECR_URL 
 def HASH_COMMIT
-def STAGING_USER = "ec2-user@ec2-3-238-105-179.compute-1.amazonaws.com"
-def DEPLOYMENT_USER =  " ec2-user@ec2-3-91-151-183.compute-1.amazonaws.com"
+
 pipeline {
     agent any
 
@@ -22,19 +21,12 @@ pipeline {
                 sh 'go test -v -coverprofile cover.out'
             }
         }
-        stage('Run sonarqube') {
-            tools {
-                go 'go-1.20.3'
-            }
-            environment {
-                GO111MODULE = 'on'
-            }
+        stage('Run sonarqube') {          
             agent {
                 label "docker"
             }
             steps {
                 withSonarQubeEnv("sonarqube-9.9.1"){
-                    sh "cat sonar-project.properties"
                     sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
                 }
             }
@@ -46,7 +38,6 @@ pipeline {
                 }
             }
         }
-
         stage('Docker login') {
             agent {
                 label "docker"
@@ -76,7 +67,6 @@ pipeline {
                       }
                     sh "echo ${ECR_URL}"
                     sh "echo ${HASH_COMMIT}"
-
                 }
             }
         }
@@ -88,7 +78,6 @@ pipeline {
                 sh "docker build -t  ${ECR_URL} . --no-cache"
             }
         }
-
         stage('Tag image'){
             agent {
                 label "docker"
@@ -110,21 +99,28 @@ pipeline {
                 """
             }
         }
-        stage('Deploy to stage'){
+        stage('Deploy to staging'){
+            agent {
+                label "terraform"
+            }
             steps{
-                sh """
-                scp docker.sh ${STAGING_USER}:~/stage
-                """
+               dir("terraform/staging/"){
+                    sh """
+                    terraform init
+                    terraform apply -var='image_tag=latest' -auto-approve
+                    aws ecs update-service --region us-east-1 --cluster staging-cluster --service staging-service --task-definition 'staging-td'  --force-new-deployment
+                    """                   
+                    script {
+                        STAGING_DNS = sh (
+                          script: "terraform output --raw staging_lb",
+                          returnStdout: true
+                        )
+                    }
+                    sh "echo ${STAGING_DNS}"
+               }
             }
         }
-        stage('Deploy to production'){
-            steps{
-                input(message: '¿Do you want to deploy to production?', ok: 'yes')
-                sh """
-                scp docker.sh ${DEPLOYMENT_USER}:~/production
-                """
-            }
-        }
+
     }
     post{
         always {
