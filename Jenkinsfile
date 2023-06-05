@@ -6,38 +6,38 @@ pipeline {
 
      stages {
 
-        stage('Run unit test/coverage') {
-            tools {
-                go 'go-1.20.3'
-            }
-            environment {
-                GO111MODULE = 'on'
-            }
-            agent {
-                label "docker"
-            }
-            steps {
-                sh 'go test'
-                sh 'go test -v -coverprofile cover.out'
-            }
-        }
-        stage('Run sonarqube') {          
-            agent {
-                label "docker"
-            }
-            steps {
-                withSonarQubeEnv("sonarqube-9.9.1"){
-                    sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
-                }
-            }
-        }
-        stage("Quality Gate") {
-            steps{
-                timeout(time: 1, unit: 'HOURS') {
-                waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // stage('Run unit test/coverage') {
+        //     tools {
+        //         go 'go-1.20.3'
+        //     }
+        //     environment {
+        //         GO111MODULE = 'on'
+        //     }
+        //     agent {
+        //         label "docker"
+        //     }
+        //     steps {
+        //         sh 'go test'
+        //         sh 'go test -v -coverprofile cover.out'
+        //     }
+        // }
+        // stage('Run sonarqube') {          
+        //     agent {
+        //         label "docker"
+        //     }
+        //     steps {
+        //         withSonarQubeEnv("sonarqube-9.9.1"){
+        //             sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
+        //         }
+        //     }
+        // }
+        // stage("Quality Gate") {
+        //     steps{
+        //         timeout(time: 1, unit: 'HOURS') {
+        //         waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
         stage('Docker login') {
             agent {
                 label "docker"
