@@ -120,6 +120,27 @@ pipeline {
                }
             }
         }
+        stage('Deploy to production'){
+            agent {
+                label "terraform"
+            }
+            steps{
+               dir("terraform/production/"){
+                    sh """
+                    terraform init
+                    terraform apply -var='image_tag=latest' -auto-approve
+                    aws ecs update-service --region us-east-1 --cluster production-cluster --service production-service --task-definition 'production-td'  --force-new-deployment
+                    """                   
+                    script {
+                        STAGING_DNS = sh (
+                          script: "terraform output --raw production_lb",
+                          returnStdout: true
+                        )
+                    }
+                    sh "echo ${STAGING_DNS}"
+               }
+            }
+        }
 
     }
     post{
