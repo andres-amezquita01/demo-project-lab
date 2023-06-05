@@ -132,12 +132,12 @@ pipeline {
                     aws ecs update-service --region us-east-1 --cluster production-cluster --service production-service --task-definition 'production-td'  --force-new-deployment
                     """                   
                     script {
-                        STAGING_DNS = sh (
+                        PRODUCTION_DNS = sh (
                           script: "terraform output --raw production_lb",
                           returnStdout: true
                         )
                     }
-                    sh "echo ${STAGING_DNS}"
+                    sh "echo ${PRODUCTION_DNS}"
                }
             }
         }
