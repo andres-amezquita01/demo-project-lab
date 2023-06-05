@@ -19,6 +19,16 @@ resource "aws_security_group" "sg" {
     security_groups = [ aws_security_group.lb-sg.id ]
 
   }
+  ingress {
+    description = "Allow HTTP for 9100"
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    #security_groups = [ aws_security_group.lb-sg.id ]
+
+  }
   egress {
     from_port        = 0
     to_port          = 0
@@ -113,5 +123,67 @@ resource "aws_ecs_service" "service" {
     target_group_arn = aws_lb_target_group.app-tg.arn
     container_name = "${var.environment}-image"
     container_port = 8080
+  }
+  tags = {
+    "environment" = "${var.environment}" 
+  }
+}
+resource "aws_ecs_task_definition" "monitoring_td" {
+  family = "${var.environment}-monitoring-td"
+  task_role_arn = data.aws_iam_role.task_execution_role.arn
+  execution_role_arn = data.aws_iam_role.task_execution_role.arn
+  network_mode = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu = "512"
+  memory = "1024"
+  runtime_platform {
+    cpu_architecture = "X86_64" 
+    operating_system_family = "LINUX"
+  }
+  container_definitions = jsonencode([
+    {
+      "name" : "node-exporter",
+      "image" : "prom/node-exporter:v1.5.0",
+      "cpu" : 512,
+      "portMappings" : [
+        {
+          "name": "${var.environment}-image-9100-tcp",
+          "containerPort" : 9100,
+          "hostPort" : 9100,
+          "protocol" : "tcp"
+        }
+      ],
+      "essential" : true
+    }
+    # {
+    #   "name" : "cadvisor",
+    #   "image" : "gcr.io/cadvisor/cadvisor:v0.46.0",
+    #   "cpu" : 256,
+    #   "memory" : 256,
+    #   "memoryReservation" : 128,
+    #   "portMappings" : [
+    #     {
+    #       "containerPort" : 8080,
+    #       "hostPort" : 9200,
+    #       "protocol" : "tcp"
+    #     }
+    #   ],
+    #   "essential" : true,
+    #   "mountPoints" : [],
+    #   "privileged" : true,
+    #   "readonlyRootFilesystem" : false
+    # }
+  ])
+}
+resource "aws_ecs_service" "monitoring" {
+  name                  = "${var.environment}-metric-exporter-service"
+  cluster               = aws_ecs_cluster.main_cluster.id
+  task_definition       = aws_ecs_task_definition.monitoring_td.arn
+  desired_count = 1
+  launch_type = "FARGATE"
+  network_configuration {
+    subnets = [aws_subnet.public_subnets[0].id,aws_subnet.public_subnets[1].id]
+    security_groups = [aws_security_group.sg.id]
+    assign_public_ip = true
   }
 }
