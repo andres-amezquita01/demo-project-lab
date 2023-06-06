@@ -1,4 +1,0 @@
--> update the task
-terraform apply -var="image_tag=latest" 
--> update the service, it means make the deployment
-aws ecs update-service --region us-east-1 --cluster final-demo-cluster --service test-service --task-definition "test-td"  --force-new-deployment

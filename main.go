@@ -314,7 +314,6 @@ func main() {
 	// Register handler
 	entry := rkbootmux.GetMuxEntry("greeter")
 	entry.Router.NewRoute().Methods(http.MethodGet).Path("/v1/greeter").HandlerFunc(Greeter)
-	// entry.Router.NewRoute().Methods(http.MethodGet).Path("/metrics").HandlerFunc(promhttp.Handler())
 	entry.Router.NewRoute().Methods(http.MethodGet).Path("/health").HandlerFunc(Health)
 	entry.Router.NewRoute().Methods(http.MethodGet).Path("/test").HandlerFunc(Test)
 	entry.Router.NewRoute().Methods(http.MethodGet).Path("/").HandlerFunc(MainPage)
