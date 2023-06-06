@@ -180,7 +180,7 @@ func SubtractionNumbers(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	subtraction := num1 + num2
+	subtraction := num1 - num2
 	requestsTotal.Inc()
 	requestsSub.Inc()
 
