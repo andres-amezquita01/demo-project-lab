@@ -140,7 +140,7 @@ pipeline {
         //             sh "echo ${PRODUCTION_DNS}"
         //        }
         //     }
-        }
+        // }
 
     }
     post{
