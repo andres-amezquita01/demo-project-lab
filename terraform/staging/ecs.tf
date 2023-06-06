@@ -14,9 +14,19 @@ resource "aws_security_group" "sg" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    # cidr_blocks = ["0.0.0.0/0"]
-    # ipv6_cidr_blocks = ["::/0"]
-    security_groups = [ aws_security_group.lb-sg.id ]
+    cidr_blocks = ["0.0.0.0/0"]
+    # cidr_blocks = ["${aws_instance.monitor.private_ip}/32"]
+    # security_groups = [ aws_security_group.lb-sg.id ]
+
+  }
+  ingress {
+    description = "Allow HTTP for 9100"
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    # cidr_blocks = ["${aws_instance.monitor.private_ip}/32"]
+    #security_groups = [ aws_security_group.lb-sg.id ]
 
   }
   egress {
@@ -113,5 +123,8 @@ resource "aws_ecs_service" "service" {
     target_group_arn = aws_lb_target_group.app-tg.arn
     container_name = "${var.environment}-image"
     container_port = 8080
+  }
+  tags = {
+    "environment" = "${var.environment}" 
   }
 }

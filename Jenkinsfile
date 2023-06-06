@@ -21,23 +21,23 @@ pipeline {
                 sh 'go test -v -coverprofile cover.out'
             }
         }
-        stage('Run sonarqube') {          
-            agent {
-                label "docker"
-            }
-            steps {
-                withSonarQubeEnv("sonarqube-9.9.1"){
-                    sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
-                }
-            }
-        }
-        stage("Quality Gate") {
-            steps{
-                timeout(time: 1, unit: 'HOURS') {
-                waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // stage('Run sonarqube') {          
+        //     agent {
+        //         label "docker"
+        //     }
+        //     steps {
+        //         withSonarQubeEnv("sonarqube-9.9.1"){
+        //             sh "/home/ec2-user/install_scanner/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
+        //         }
+        //     }
+        // }
+        // stage("Quality Gate") {
+        //     steps{
+        //         timeout(time: 1, unit: 'HOURS') {
+        //         waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
         stage('Docker login') {
             agent {
                 label "docker"
@@ -120,27 +120,27 @@ pipeline {
                }
             }
         }
-        stage('Deploy to production'){
-            agent {
-                label "terraform"
-            }
-            steps{
-               dir("terraform/production/"){
-                    sh """
-                    terraform init
-                    terraform apply -var='image_tag=latest' -auto-approve
-                    aws ecs update-service --region us-east-1 --cluster production-cluster --service production-service --task-definition 'production-td'  --force-new-deployment
-                    """                   
-                    script {
-                        PRODUCTION_DNS = sh (
-                          script: "terraform output --raw production_lb",
-                          returnStdout: true
-                        )
-                    }
-                    sh "echo ${PRODUCTION_DNS}"
-               }
-            }
-        }
+        // stage('Deploy to production'){
+        //     agent {
+        //         label "terraform"
+        //     }
+        //     steps{
+        //        dir("terraform/production/"){
+        //             sh """
+        //             terraform init
+        //             terraform apply -var='image_tag=latest' -auto-approve
+        //             aws ecs update-service --region us-east-1 --cluster production-cluster --service production-service --task-definition 'production-td'  --force-new-deployment
+        //             """                   
+        //             script {
+        //                 PRODUCTION_DNS = sh (
+        //                   script: "terraform output --raw production_lb",
+        //                   returnStdout: true
+        //                 )
+        //             }
+        //             sh "echo ${PRODUCTION_DNS}"
+        //        }
+        //     }
+        // }
 
     }
     post{

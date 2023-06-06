@@ -51,3 +51,13 @@ variable "registry" {
 variable "image_tag" {
   default = "latest"
 }
+#Variables used in monitoring.tf
+variable "ec2_type" {
+  default = "t2.micro"
+}
+variable "ami" {
+  default = "ami-0bef6cc322bfff646"
+}
+variable "key_name" {
+  default = "devops"
+}
