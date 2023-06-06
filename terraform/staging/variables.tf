@@ -51,3 +51,14 @@ variable "availability_zones" {
  description = "Availability Zones list"
  default     = ["us-east-1a", "us-east-1b"]
 }
+
+#Variables used in monitoring.tf
+variable "ec2_type" {
+  default = "t2.micro"
+}
+variable "ami" {
+  default = "ami-0bef6cc322bfff646"
+}
+variable "key_name" {
+  default = "devops"
+}
