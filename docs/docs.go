@@ -108,6 +108,23 @@ const docTemplate = `{
                 }
             }
         },
+        "/health": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Health service",
+                "operationId": "7",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.GreeterResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/mul": {
             "post": {
                 "produces": [

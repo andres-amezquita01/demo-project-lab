@@ -93,6 +93,17 @@ paths:
           schema:
             $ref: '#/definitions/main.DivResponse'
       summary: Division service
+  /health:
+    get:
+      operationId: "7"
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.GreeterResponse'
+      summary: Health service
   /mul:
     post:
       operationId: "5"

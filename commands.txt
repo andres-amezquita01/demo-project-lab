@@ -1,0 +1,2 @@
+-> get swag library to add documentation
+go get -u github.com/swaggo/swag/cmd/swag
