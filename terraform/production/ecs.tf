@@ -10,22 +10,26 @@ resource "aws_security_group" "sg" {
   vpc_id      = aws_vpc.main_vpc.id
 
   ingress {
-    description = "Allow HTTP for 8080"
+    description = "Allow HTTP for 8080 from lb"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    security_groups = [ aws_security_group.lb-sg.id ]
+  }
+  ingress {
+    description = "Allow HTTP for 8080 from scraping monitor"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    # cidr_blocks = ["${aws_instance.monitor.private_ip}/32"]
-    #security_groups = [ aws_security_group.lb-sg.id ]
+    # security_groups = [ aws_security_group.monitor-sg.id ]
   }
   ingress {
     description = "Allow HTTP for 9100"
     from_port   = 9100
     to_port     = 9100
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    # cidr_blocks = ["${aws_instance.monitor.private_ip}/32"]
-    #security_groups = [ aws_security_group.lb-sg.id ]
+    security_groups = [ aws_security_group.monitor-sg.id ]
   }
   egress {
     from_port        = 0
