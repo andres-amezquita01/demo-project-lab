@@ -8,7 +8,7 @@ scrape_configs:
     - targets: ['prometheus:9090']
   - job_name: 'go_staging_exporter'
     static_configs:
-    - targets: ['54.221.94.68:8080'] # I could not get this IP from ecs task look for prometheus-ecs-sd
+    - targets: ['10.0.1.235:8080'] # 
   - job_name: 'go_production_exporter'
     static_configs:
     - targets: ['54.82.184.2:8080'] # I could not get this IP from ecs task look for prometheus-ecs-sd
