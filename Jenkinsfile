@@ -7,6 +7,7 @@ pipeline {
      stages {
 
         stage('Run unit test/coverage') {
+            when { anyOf { branch 'main'; branch 'dev' } }
             tools {
                 go 'go-1.20.3'
             }
@@ -21,7 +22,8 @@ pipeline {
                 sh 'go test -v -coverprofile cover.out'
             }
         }
-        stage('Run sonarqube') {          
+        stage('Run sonarqube') {   
+            when { anyOf { branch 'main'; branch 'dev' } }       
             agent {
                 label "docker"
             }
@@ -32,6 +34,7 @@ pipeline {
             }
         }
         stage("Quality Gate") {
+            when { anyOf { branch 'main'; branch 'dev' } }
             steps{
                 timeout(time: 1, unit: 'HOURS') {
                 waitForQualityGate abortPipeline: true
@@ -39,6 +42,7 @@ pipeline {
             }
         }
         stage('Docker login') {
+            when { anyOf { branch 'dev' } }
             agent {
                 label "docker"
             }
@@ -47,6 +51,7 @@ pipeline {
             }
         }
         stage('Get ecr url and hash commit'){
+            when { anyOf { branch 'dev' } }
             agent {
                 label "terraform"
             }
@@ -71,6 +76,7 @@ pipeline {
             }
         }
         stage('Build image'){
+            when { anyOf { branch 'dev' } }
             agent {
                 label "docker"
             }
@@ -79,6 +85,7 @@ pipeline {
             }
         }
         stage('Tag image'){
+            when { anyOf { branch 'dev' } }
             agent {
                 label "docker"
             }
@@ -89,6 +96,7 @@ pipeline {
             }
         }
         stage('Push image'){
+            when { anyOf { branch 'dev' } }
             agent {
                 label "docker"
             }
@@ -100,6 +108,7 @@ pipeline {
             }
         }
         stage('Deploy to staging'){
+            when { anyOf { branch 'dev' } }
             agent {
                 label "terraform"
             }
@@ -121,6 +130,7 @@ pipeline {
             }
         }
         stage('Deploy to production'){
+            when { anyOf { branch 'main' } }
             agent {
                 label "terraform"
             }

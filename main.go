@@ -294,7 +294,7 @@ func Health(writer http.ResponseWriter, request *http.Request) {
 
 func Test(writer http.ResponseWriter, request *http.Request) {
 	rkmuxinter.WriteJson(writer, http.StatusOK, &GreeterResponse{
-		Message: fmt.Sprintf("testing v2!"),
+		Message: fmt.Sprintf("testing v3.000!"),
 	})
 	requestsTotal.Inc()
 }

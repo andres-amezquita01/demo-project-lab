@@ -58,3 +58,44 @@ resource "aws_instance" "monitor" {
     ignore_changes = all
   }
 }
+resource "aws_cloudwatch_dashboard" "dashboard" {
+  dashboard_name = "${var.environment}-cloudwatch-dashboard"
+  dashboard_body = jsonencode({
+    widgets = [
+      {
+            "height": 24,
+            "width": 24,
+            "y": 0,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [ "ECS/ContainerInsights", "CpuReserved", "ClusterName", "${var.environment}-cluster", { "id": "m1" } ],
+                    [ ".", "EphemeralStorageUtilized", ".", ".", { "id": "m2" } ],
+                    [ ".", "NetworkTxBytes", ".", ".", { "id": "m3" } ],
+                    [ ".", "EphemeralStorageReserved", ".", ".", { "id": "m4" } ],
+                    [ ".", "MemoryUtilized", ".", ".", { "id": "m5" } ],
+                    [ ".", "StorageReadBytes", ".", ".", { "id": "m6" } ],
+                    [ ".", "NetworkRxBytes", ".", ".", { "id": "m7" } ],
+                    [ ".", "CpuUtilized", ".", ".", { "id": "m8" } ],
+                    [ ".", "StorageWriteBytes", ".", ".", { "id": "m9" } ],
+                    [ ".", "MemoryReserved", ".", ".", { "id": "m10" } ],
+                    [ ".", "ServiceCount", ".", ".", { "id": "m11" } ],
+                    [ ".", "ContainerInstanceCount", ".", ".", { "id": "m12" } ]
+                ],
+                "view": "gauge",
+                "stacked": false,
+                "region": "${var.region}",
+                "stat": "Average",
+                "period": 300,
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "max": 100
+                    }
+                }
+            }
+        }
+    ]
+  })
+}
