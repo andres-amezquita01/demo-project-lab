@@ -161,5 +161,13 @@ pipeline {
                 sh 'docker logout'
             }
         }
+        success {
+            echo 'notifying successful execution....'                                                                                                                                             
+            discordSend description: "GoApp Final Demo, status: Pipeline Succeded", footer: "Build Number:${BUILD_NUMBER}", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: 'https://discord.com/api/webhooks/1230768456001916971/zR2Ws1dto0En6CxBgaeoh5PwUTFTEGv1h_DbXjN0ciWXx1BcHwiO7Asw_y3t0mgmSZlD'
+        }
+        failure {
+            echo 'notifying failed execution....'                                                                                                                                             
+            discordSend description: "GoApp Final Demo, status: Pipeline Failed", footer: "Build Number:${BUILD_NUMBER}", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: 'https://discord.com/api/webhooks/1230768456001916971/zR2Ws1dto0En6CxBgaeoh5PwUTFTEGv1h_DbXjN0ciWXx1BcHwiO7Asw_y3t0mgmSZlD'
+        }
     }
 }
